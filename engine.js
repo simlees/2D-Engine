@@ -15,6 +15,7 @@ Engine.marble.yVel = 0;
 
 Engine.marble.velLimit = 10;
 
+Engine.fps = 40;
 
 
 $(document).ready(function(){
@@ -36,12 +37,26 @@ Engine.updateVelocity = function() {
   if (pressedKeys.indexOf('a') > -1 && Engine.marble.xVel > -Engine.marble.velLimit) { Engine.marble.xVel--; }
 }
 
-Engine.applyCollisions = function() {
-  if (Engine.marble.xPos < 0 || Engine.marble.xPos + (Engine.marble.radius * 2) > Engine.canvas.width) {
+Engine.updatePosition = function() {
+  Engine.marble.xPos += Engine.marble.xVel;
+  Engine.marble.yPos += Engine.marble.yVel;
+  if (Engine.marble.xPos < 0) {
     Engine.marble.xVel = -Engine.marble.xVel;
+    Engine.marble.xPos = Math.abs(Engine.marble.xPos);
   }
-  if (Engine.marble.yPos < 0 || Engine.marble.yPos + (Engine.marble.radius * 2) > Engine.canvas.height) {
+  if (Engine.marble.xPos + (Engine.marble.radius * 2) > Engine.canvas.width) {
+    Engine.marble.xVel = -Engine.marble.xVel;
+    let diff = Engine.marble.xPos + (Engine.marble.radius * 2) - Engine.canvas.width;
+    Engine.marble.xPos = Engine.marble.xPos - (diff * 2);
+  }
+  if (Engine.marble.yPos < 0) {
     Engine.marble.yVel = -Engine.marble.yVel;
+    Engine.marble.yPos = Math.abs(Engine.marble.yPos);
+  }
+  if (Engine.marble.yPos + (Engine.marble.radius * 2) > Engine.canvas.height) {
+    Engine.marble.yVel = -Engine.marble.yVel;
+    let diff = Engine.marble.yPos + (Engine.marble.radius * 2) - Engine.canvas.height;
+    Engine.marble.yPos = Engine.marble.yPos - (diff * 2);
   }
 }
 
@@ -54,9 +69,7 @@ Engine.draw = function() {
 
 Engine.update = function() {
   Engine.updateVelocity();
-  Engine.marble.xPos += Engine.marble.xVel;
-  Engine.marble.yPos += Engine.marble.yVel;
-  Engine.applyCollisions();
+  Engine.updatePosition();
 };
 
 Engine.run = function() { // While the game is running
@@ -64,7 +77,6 @@ Engine.run = function() { // While the game is running
   Engine.draw();          // Draw Entities to the Screen
 }
 
-Engine.fps = 25;
 
 // Start the game loop
 
