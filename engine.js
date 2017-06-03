@@ -17,6 +17,8 @@ Engine.marble.velLimit = 10;
 
 Engine.fps = 40;
 
+Engine.airResistance = 1.01;
+
 
 $(document).ready(function(){
   $('#canvas').css({
@@ -60,6 +62,15 @@ Engine.updatePosition = function() {
   }
 }
 
+Engine.applyAirResistance = function() {
+  Engine.marble.xVel /= Engine.airResistance;
+  Engine.marble.yVel /= Engine.airResistance;
+}
+
+Engine.applyGravity = function() {
+  Engine.marble.yVel += 0.4;
+}
+
 Engine.draw = function() {
   $('#marble').css({
     'left': Engine.marble.xPos,
@@ -69,6 +80,8 @@ Engine.draw = function() {
 
 Engine.update = function() {
   Engine.updateVelocity();
+  Engine.applyGravity();
+  Engine.applyAirResistance();
   Engine.updatePosition();
 };
 
